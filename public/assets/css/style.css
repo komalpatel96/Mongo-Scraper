@@ -1,0 +1,11 @@
+.jumbotron{
+	background-image: url("../images/newspaper.jpg");
+	background-size: cover;
+    margin-bottom: 30px;
+    height: 400px;
+    color: white;
+	font-family: 'Eczar', serif;
+   	text-align: center;
+   	opacity: 0.8;
+    text-shadow: black 0em 0.8em 0.7em;
+}
