@@ -41,20 +41,31 @@ app.set("view engine", "handlebars");
 
 // Set mongoose to leverage built in JavaScript ES6 Promises
 // Connect to the Mongo DB
-mongoose.Promise = Promise;
 // mongoose.connect("mongodb://localhost/NYTScraper", {
 //   useMongoClient: true
 // });
 
 //------------DATABASE CONFIGURATION WITH MONGOOSE---------------------
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/NYTScraper";
+var databaseUri = "mongodb://localhost/NYTScraper";
+mongoose.Promise = Promise;
 
-mongoose.connect(MONGODB_URI, {
-  useMongoClient:true
-});
+
+
+if (process.env.MONGODB_URI){
+  mongoose.connect(process.env.MONGODB_URI);
+} else {
+  mongoose.connect(databaseUri);
+  } 
+
+
+// var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/NYTScraper";
+
+// mongoose.connect(MONGODB_URI, {
+//   useMongoClient:true
+// });
 
 //----------------------END OF CONFIGURATION------------
-// var db = mongoose.connection;
+var db = mongoose.connection;
 
 // //show any mongoose errors
 // db.on("error", function(err){

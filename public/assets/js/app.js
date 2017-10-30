@@ -25,7 +25,7 @@ $(document).on("click", "#deleteBtn", function() {
     });
 });
 
-//On click NoteBtn btn --> DELETES ARTICLE
+//On click NoteBtn btn --> DELETES NOTE
 $(document).on("click", "#saveNote", function() {
   console.log("clicking the noteBtn in app.js");
 
