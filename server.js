@@ -12,15 +12,13 @@ var cheerio = require("cheerio");
 // Require all models
 var db = require("./models");
 
-var PORT = 3000;
+var PORT = process.env.PORT || 3000;
 
 // Initialize Express
 var app = express();
 
 // var routes = require("./controllers/controller.js");
 
-
-// Configure middleware
 
 // Use morgan logger for logging requests
 app.use(logger("dev"));
@@ -30,13 +28,6 @@ app.use(bodyParser.urlencoded({
 }));
 // Use express.static to serve the public folder as a static directory
 app.use(express.static("public"));
-
-// Set mongoose to leverage built in JavaScript ES6 Promises
-// Connect to the Mongo DB
-mongoose.Promise = Promise;
-mongoose.connect("mongodb://localhost/NYTScraper", {
-  useMongoClient: true
-});
 
 var exphbs = require("express-handlebars");
 
@@ -48,7 +39,34 @@ app.engine("handlebars", exphbs({
 
 app.set("view engine", "handlebars");
 
+// Set mongoose to leverage built in JavaScript ES6 Promises
+// Connect to the Mongo DB
+mongoose.Promise = Promise;
+// mongoose.connect("mongodb://localhost/NYTScraper", {
+//   useMongoClient: true
+// });
 
+//------------DATABASE CONFIGURATION WITH MONGOOSE---------------------
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/NYTScraper";
+
+mongoose.connect(MONGODB_URI, {
+  useMongoClient:true
+});
+
+//----------------------END OF CONFIGURATION------------
+// var db = mongoose.connection;
+
+// //show any mongoose errors
+// db.on("error", function(err){
+//   console.log("Mongoose error: ", err);
+// });
+
+// db.once("open", function(err){
+//   console.log("Mongoose connection successfull.");
+// });
+
+
+//ROUTES
 app.get("/", function(req, res) {
   db.Article.find({}, function(err, data) {
     console.log(data);
