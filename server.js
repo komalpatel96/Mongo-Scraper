@@ -1,117 +1,304 @@
-// Dependencies
 var express = require("express");
-var path = require('path');
-
-var mongojs = require("mongojs");
 var bodyParser = require("body-parser");
 var logger = require("morgan");
+var mongoose = require("mongoose");
 
-// Require request and cheerio. This makes the scraping possible
-var request = require("request");
+// Our scraping tools
+// Axios is a promised-based http library, similar to jQuery's Ajax method
+// It works on the client and on the server
+var axios = require("axios");
 var cheerio = require("cheerio");
 
-// Database configuration
-var databaseUrl = "scraper";
-var collections = ["scrapedData"];
+// Require all models
+var db = require("./models");
+
+var PORT = 3000;
 
 // Initialize Express
 var app = express();
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(express.static("public"));
-// Serve static content for the app from the "public" directory in the application directory.
+
+// var routes = require("./controllers/controller.js");
+
+
+// Configure middleware
+
+// Use morgan logger for logging requests
+app.use(logger("dev"));
+// Use body-parser for handling form submissions
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
+// Use express.static to serve the public folder as a static directory
 app.use(express.static("public"));
 
-app.use(bodyParser.urlencoded({ extended: false }));
+// Set mongoose to leverage built in JavaScript ES6 Promises
+// Connect to the Mongo DB
+mongoose.Promise = Promise;
+mongoose.connect("mongodb://localhost/NYTScraper", {
+  useMongoClient: true
+});
 
-// Set Handlebars.
 var exphbs = require("express-handlebars");
 
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+//HANDLEBARS
+app.engine("handlebars", exphbs({
+  title: "PAGE TITLE",
+  defaultLayout: "main"
+}));
+
 app.set("view engine", "handlebars");
 
-// Import routes and give the server access to them.
-// var routes = require("./routes/routes.js");
 
-// app.use("/", routes);
-
-// Hook mongojs configuration to the db variable
-var db = mongojs(databaseUrl, collections);
-db.on("error", function(error) {
-  console.log("Database Error:", error);
-});
-
-// Main route (simple Hello World Message)
 app.get("/", function(req, res) {
-  res.send("Hello world");
+  db.Article.find({}, function(err, data) {
+    console.log(data);
+    if (err) {
+      console.log(err);
+    } else {
+      // res.json(data);
+      res.render("index", {
+        article: data
+      });
+    }
+  });
 });
 
-/* TODO: make two more routes
- * -/-/-/-/-/-/-/-/-/-/-/-/- */
+// Routes
+app.get("/scrape", function(req, res) {
+  // First, we grab the body of the html with request
+  axios.get("https://www.nytimes.com/").then(function(response) {
+    // Then, we load that into cheerio and save it to $ for a shorthand selector
+    var $ = cheerio.load(response.data);
+    // Now, we grab every h2 within an article tag, and do the following:
+    $("h2.story-heading").each(function(i, element) {
+      // Save an empty result object
+      console.log(element);
+      var result = {};
+      // console.log(result); //empty {}
+      // Add the text and href of every link, and save them as properties of the result object
+      result.title = $(this)
+        .children("a")
+        .text();
+      result.link = $(this)
+        .children("a")
+        .attr("href");
+      result.summary = $(this)
+        .children("a.story-link")
+        .children("div.story-meta")
+        .children("p.summary")
+        .text();
+      result.saved = false;
 
-// Route 1
-// =======
-// This route will retrieve all of the data
-// from the scrapedData collection as a json (this will be populated
-// by the data you scrape using the next route)
-app.post("/fetch", function(req, res) {
+      // Create a new Article using the `result` object built from scraping
+      db.Article
+        .insertMany(result)
+        .then(function(dbArticle) {
+          console.log(result);
+          // If we were able to successfully scrape and save an Article, send a message to the client
+          console.log("Scrape Complete!");
+          // console.log(dbArticle);
 
-  // Make a request call to grab the HTML body from the site of your choice
-  request("https://www.cnn.com/us", function(error, response, html) {
+          res.send("Scrape Complete");
 
-    // Load the HTML into cheerio and save it to a variable
-    // '$' becomes a shorthand for cheerio's selector commands, much like jQuery's '$'
-    var $ = cheerio.load(html);
+        })
+        .catch(function(err) {
+          // If an error occurred, send it to the client
+          res.json(err);
+        });
+    });
+    res.redirect("/");
+  });
+});
 
-    var results = [];
-    // Select each element in the HTML body from which you want information.
-    // NOTE: Cheerio selectors function similarly to jQuery's selectors,
-    // but be sure to visit the package's npm page to see how it works
-    $("h3.cd__headline").each(function(i, element) {
+// Route for getting all Articles from the db
+app.get("/articles", function(req, res) {
+  // TODO: Finish the route so it grabs all of the articles
+  db.Article.find({}, function(err, data) {
+    // Log any errors if the server encounters one
+    if (err) {
+      console.log(err);
+    }
+    // Otherwise, send the result of this query to the browser
+    else {
+      res.json(data);
+    }
+  });
+});
 
-      var link = $(element).children().attr("href");
-      var title = $(element).children().text();
+//SAVE Article
+app.post("/saved/:id", function(req, res) {
 
-      // console.log("headline: ", element);
+  // var articleId = `ObjectId("${req.params.id}")`;
 
-      results.insert({
-        "title": title,
-        "link": link
+  var articleId = req.params.id
+  console.log("trying to save article");
+
+  db.Article.find({
+      _id: articleId
+    })
+    .then(function(newNote) {
+      // console.log("inside the create function");
+      //log errors
+      console.log("inside the else findOneAndUpdate");
+
+      db.Article.findOneAndUpdate({
+          _id: articleId
+        }, {
+          $set: {
+            saved: true
+          }
+        }, {
+          new: true
+        })
+        .then(function(data) {
+          console.log("changed saved to true!!!")
+          res.render(data);
+        })
+    })
+
+});
+
+//Grabs all "SAVED: TRUE" articles
+app.get("/saved", function(req, res) {
+  // Grab every dbArticle in the Articles array
+  var id = req.params.id;
+  db.Article.find({
+    "saved": true
+  }, function(error, dbArticle) {
+    // Log errors
+    if (error) {
+      console.log(error // Or send the dbArticle to the browser as a json object
+      );
+    } else {
+      res.render("saved", {
+        article: dbArticle
       });
+    }
+  });
+});
 
-      // response.json(db.scrape);
+
+// Route for saving/updating an Article's associated Note
+app.post("/articles/:id", function(req, res) {
+
+  var articleId = req.params.id;
+
+  console.log(req.body);
+  db.Note
+    .create(req.body)
+    // Specify that we want to populate the retrieved libraries with any associated books
+    .then(function(newNote) {
+      // If any Libraries are found, send them to the client with any associated Books
+      return db.Article.update({
+        _id: articleId
+      }, { //push is only for an array
+        $push: {
+          note: newNote._id
+        }
+      }, {
+        new: true
+      }).then(function(dbArticle) {
+        res.json(dbArticle);
+
+      });
+    })
+});
+
+app.get("/notes/:id", function(req, res) {
+  var reqId = req.params.id;
+
+  console.log(articleId);
+
+  db.Note
+    .find({
+      "articleId": reqId
+    })
+    .then(function(dbNote) {
+
+      for (var i = 0; i < dbNote.length; i++) {
+        console.log(dbNote[i]);
+      }
+    })
+    .then(function(newNotes) {
+      // If an error occurs, send it back to the client
+      console.log(newNotes)
+    });
+});
+
+
+app.get("/savednotes/:id", function(req, res) {
+  var articleId = req.params.id;
+
+  console.log(articleId);
+
+  db.Article
+    .find({
+      "articleId": req.params.id
+    })
+    .then(function(dbNote) {
+
+      for (var i = 0; i < dbNote.length; i++) {
+        console.log(dbNote[i]);
+      }
+    })
+    .then(function(newNotes) {
+      // If an error occurs, send it back to the client
+      console.log(newNotes)
+    });
+});
+
+// Route for grabbing a specific Article by id, populate it with it's note
+app.get("/articles/:id", function(req, res) {
+
+  db.Article
+    .find({
+      "_id": req.params.id
+    })
+    // Specify that we want to populate the retrieved libraries with any associated books
+    .populate("note")
+    .then(function(dbNote) {
+      // If any Libraries are found, send them to the client with any associated Books
+      console.log(dbNote);
+      res.json(dbNote);
+    })
+    .catch(function(err) {
+      // If an error occurs, send it back to the client
+      res.json(err);
+    });
+});
+
+//DELETE-ING ARTICLE
+app.post("/api/delete/:id", function(req, res) {
+
+  console.log("Trying to delete this article ID:");
+  console.log(req.params.id);
+
+  console.log("Got into delete function");
+  db.Article.find({
+    _id: req.params.id
+  }).then(function(dbArticle) {
+    console.log(dbArticle);
+
+    db.Article.findOneAndUpdate({
+      _id: req.params.id
+    }, {
+      $set: {
+        saved: false
+      }
+    }, {
+      new: true
+    }).then(function(result) {
+      console.log("delete function result-------")
+
+      console.log(result);
+      res.json(result);
     });
 
-    db.scrape.insertMany(results);
+    res.redirect("/saved");
   });
-
 });
 
-// Route 2
-// =======
-// When you visit this route, the server will
-// scrape data from the site of your choice, and save it to
-// MongoDB.
-// TIP: Think back to how you pushed website data
-// into an empty array in the last class. How do you
-// push it into a MongoDB collection instead?
-app.get("/all", function(req, res) {
-
-      db.scrape.find({}, function(err, data) {
-        // Log any errors if the server encounters one
-        if (err) {
-          console.log(err);
-        }
-        // Otherwise, send the result of this query to the browser
-        else {
-          res.json(data);
-        }
-      });
-});
-
-/* -/-/-/-/-/-/-/-/-/-/-/-/- */
-
-// Listen on port 3000
-app.listen(3000, function() {
-  console.log("App running on port 3000!");
+// Start the server
+app.listen(PORT, function() {
+  console.log("App running on port " + PORT + "!");
 });

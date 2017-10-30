@@ -1,4 +1,4 @@
-.jumbotron{
+#jumbotron{
 	background-image: url("../images/newspaper.jpg");
 	background-size: cover;
     margin-bottom: 30px;
@@ -6,6 +6,28 @@
     color: white;
 	font-family: 'Eczar', serif;
    	text-align: center;
-   	opacity: 0.8;
-    text-shadow: black 0em 0.8em 0.7em;
+/*   	opacity: 0.8;
+*/    text-shadow: black 0em 0.8em 0.7em;
+}
+
+.btn-danger{
+  background-color: #000000
+}
+
+.btn-success{
+  background-color: #000000;
+}
+
+.btn-warning{
+  background-color: #000000;
+  border-color: #000000;
+}
+
+#deleteBtn{
+  margin-right: 5px;
+  border-color: #000000;
+}
+
+.panel-heading {
+    padding: 3px 10px 12px 9px;
 }
