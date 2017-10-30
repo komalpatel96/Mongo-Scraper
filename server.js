@@ -65,7 +65,7 @@ if (process.env.MONGODB_URI){
 // });
 
 //----------------------END OF CONFIGURATION------------
-var db = mongoose.connection;
+// var db = mongoose.connection;
 
 // //show any mongoose errors
 // db.on("error", function(err){
