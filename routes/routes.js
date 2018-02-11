@@ -40,10 +40,10 @@ app.get("/scrape", function(req, res) {
       //description of article
       result.byline = $(this).next().next("p").text().trim();
       //the author name
-      result.summary = $(this).next().next().next("p").text();
+      result.summary = $(this).next().next().next("p").text() || $(this).children("a").text() ;
 
       // Create a new Article using the `result` object built from scraping
-     // if(result.title != "" && result.summary != "") {
+     if(result.headline != "" && result.summary != "" && result.byline != "") {
       db.Article
         .insertMany(result)
         .then(function(dbArticle) {
@@ -59,7 +59,7 @@ app.get("/scrape", function(req, res) {
           // If an error occurred, send it to the client
           res.json(err);
         });
-      // }
+      }
     });
     res.redirect("/");
   });

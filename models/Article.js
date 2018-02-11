@@ -15,6 +15,7 @@ var ArticleSchema = new Schema({
   // `link` is required and of type String
   byline: {
     type: String,
+    default: "To view more information about this article, click on the title"
   },
   // `link` is required and of type String
   link: {
@@ -23,6 +24,7 @@ var ArticleSchema = new Schema({
   },
   summary: {
     type: String,
+    default: "To view more information about this article, click on the title"
   },
   image: {
     type: String,
