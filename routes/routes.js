@@ -43,7 +43,7 @@ app.get("/scrape", function(req, res) {
       result.summary = $(this).next().next().next("p").text();
 
       // Create a new Article using the `result` object built from scraping
-     if(result.title != "" && result.summary != "") {
+     // if(result.title != "" && result.summary != "") {
       db.Article
         .insertMany(result)
         .then(function(dbArticle) {
@@ -61,7 +61,7 @@ app.get("/scrape", function(req, res) {
         });
       }
     });
-  
+  // }
     res.redirect("/");
   });
 });
