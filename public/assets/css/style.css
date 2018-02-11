@@ -79,7 +79,7 @@ body{
 }
 
 .panel-heading {
-    padding: 20px;
+    padding: 15px;
 }
 
 .panel-heading >a {
@@ -100,7 +100,7 @@ body{
 
 .panel-success>.panel-heading {
     color: #333;
-    background-color: #00AA8D;
+    background-color: #455A64;
     border-color: #ddd
 }
 
@@ -108,23 +108,23 @@ body{
     color: #9d9d9d;
 }
 .navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:focus, .navbar-inverse .navbar-nav>.active>a:hover {
-     color: #00AA8D; 
+     color: #455A64; 
     background-color: #080808;
 }
 
 .btn-primary {
     color: #fff;
-    background-color: #00AA8D;
-    border-color: #00AA8D;
+    background-color: #455A64;
+    border-color: #455A64;
 }
 .btn-primary:hover {
     color: #ffffff;
-    background-color: #58baa9;
-    border-color: #00AA8D;
+    background-color: #455A64;
+    border-color: #000000;
 }
 
 .btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open>.dropdown-toggle.btn-primary.focus, .open>.dropdown-toggle.btn-primary:focus, .open>.dropdown-toggle.btn-primary:hover {
     color: #ffffff;
-    background-color: #58baa9;
-    border-color: #00AA8D;
+    background-color: #455A64;
+    border-color: #000000;
 }

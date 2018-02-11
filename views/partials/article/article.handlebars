@@ -4,10 +4,12 @@
       <a href="{{this.link}}">{{this.title}}</a>
 
       <!-- Trigger the modal with a button -->
+      <div class="col col-md-3 col-sm-6 col-xs-12 pull-right">
           <button type="submit" class="btn btn-success btn-sm pull-right" data-toggle="modal" data-id="{{this._id}}" id="saveBtn"data-target="#saveModal">Save Article</button>
+      </div>
     </div>
     <div class="panel-body">
-      <div class="col col-md-3 col-sm-6 col-sm-12 pull-right">
+      <div class="col col-md-3 col-sm-6 col-xs-12 pull-right">
           <img id="image" src="{{this.image}}" height="120px" width="200px">
       </div>
       <p>{{this.byline}}</p>

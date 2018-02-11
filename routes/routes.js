@@ -181,54 +181,29 @@ app.get("/notes/:id", function(req, res) {
     });
 });
 
-// Route for saving the new note to the database
-app.post("/savednotes/:id", function(req, res) {
-  var articleId = req.params.id;
-  var note = req.body.userNote;
 
-  console.log(note);
-  console.log(articleId);
-
-  // save the new note that gets posted to the Notes collection
-  db.Note.create(req.body).then(function(dbNote) {
-      // then find an article from the req.params.id
-      // and update its "note" property with the _id of the new note
-      return db.Article.findOneAndUpdate( {_id: articleId}, { $push: { notes: dbNote._id } }, {new: true});
-    }).then(function(dbArticle) {
-      res.json(dbArticle);
-    })
-    .catch(function(err) {
-      res.json(err);
-    })
-});
-
-// Route for populating the saved articles with their associated notes
 app.get("/savednotes/:id", function(req, res) {
   var articleId = req.params.id;
-  db.Article.findOne( {_id:articleId})
-  .populate("notes")
-  .then(function(dbNote) {
-    res.json(dbNote);
-  })
-  .catch(function(err) {
-  // If an error occurs, send it back to the client
-    res.json(err);
-  });
-});
 
-// Route for deleting a note from a saved article
-app.post("/deletenote/:noteid", function(req, res) {
-  var noteId = req.params.noteid;
+  console.log(articleId);
 
-  db.Note.findOneAndRemove( {_id:noteId}, function(err, removed) {
-    db.Article.findOneAndUpdate( {notes:noteId}, { $pull: { notes:noteId } }, function(err, removed) {
-      if(err) {
-        console.log(err);
+  db.Article
+    .find({
+      "articleId": req.params.id
+    })
+    .then(function(dbNote) {
+
+      for (var i = 0; i < dbNote.length; i++) {
+        console.log(dbNote[i]);
       }
+    })
+    .then(function(newNotes) {
+      // If an error occurs, send it back to the client
+      console.log(newNotes)
     });
-  });
 });
 
+// Route for grabbing a specific Article by id, populate it with it's note
 app.get("/articles/:id", function(req, res) {
 
   db.Article
