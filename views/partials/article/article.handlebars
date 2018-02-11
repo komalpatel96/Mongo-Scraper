@@ -1,19 +1,19 @@
-<div class="panel panel-default">
+  <div class="col col-md-12 col-sm-12 col-xs-12">
+    <div class="panel panel-default">
     <div class="panel-heading">
-      {{this.title}} 
+      <a href="{{this.link}}">{{this.title}}</a>
 
       <!-- Trigger the modal with a button -->
           <button type="submit" class="btn btn-success btn-sm pull-right" data-toggle="modal" data-id="{{this._id}}" id="saveBtn"data-target="#saveModal">Save Article</button>
-
-        
-
     </div>
-    
     <div class="panel-body">
-      <p><a href="{{this.link}}">{{this.link}}</a></p>
-      <p>{{this.summary}}</p>
-    </div>
-
+      <div class="col col-md-3 col-sm-6 col-sm-12 pull-right">
+          <img src="{{this.image}}" height="120px" width="200px">
+      </div>
+      <p>{{this.byline}}</p>
+          <p>{{this.summary}}</p>
+    </div>    
+  </div>
 </div>
 
 

@@ -7,21 +7,16 @@ var Schema = mongoose.Schema;
 // This is similar to a Sequelize model
 var NoteSchema = new Schema({
   // `title` is of type String
-  note: {
-  	type: String
+  title: {
+  	type: String,
+    trim: true
   },
   // `body` is of type String
-  noteId: {
-  	type: String
+  body: {
+  	type: String,
+    allowNull: false
   },
 
-  titleinput: {
-  	type: String
-  },
-
-  bodyinput: {
-  	type: String
-  },
 });
 
 // This creates our model from the above schema, using mongoose's model method

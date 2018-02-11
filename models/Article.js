@@ -11,8 +11,10 @@ var ArticleSchema = new Schema({
     type: String,
     required:true,
     unique:true      
-
-
+  },
+  // `link` is required and of type String
+  byline: {
+    type: String,
   },
   // `link` is required and of type String
   link: {
@@ -22,9 +24,19 @@ var ArticleSchema = new Schema({
   summary: {
     type: String,
   },
+  image: {
+    type: String,
+  },
+  notes: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Note"
+    },
+  ],
 
   saved: {
-    type: Boolean
+    type: Boolean,
+    default: false
   },
   // `note` is an object that stores a Note id
   // The ref property links the ObjectId to the Note model
