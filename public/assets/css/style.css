@@ -16,6 +16,7 @@
 
 .btn-success{
   background-color: #000000;
+  border-color: #000000;
 }
 
 .btn-warning{
@@ -29,5 +30,5 @@
 }
 
 .panel-heading {
-    padding: 3px 10px 12px 9px;
+    padding: 20px;
 }
