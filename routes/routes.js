@@ -34,13 +34,15 @@ app.get("/scrape", function(req, res) {
       var result = {};
       console.log(result); //empty {}
       // Add the text and href of every link, and save them as properties of the result object
+      var placeholder = "If you want more information about this New York Times article, click on the link above."
+
       result.image = $(this).parent().prev().find("a").find("img").attr("src");
       result.title = $(this).children("a").text().trim();
       result.link = $(this).children("a").attr("href");
       //description of article
-      result.byline = $(this).next().next("p").text().trim() || $(this).children("a").text();
+      result.byline = $(this).next().next("p").text().trim() || placeholder;
       //the author name
-      result.summary = $(this).next().next().next("p").text() || $(this).children("a").text();
+      result.summary = $(this).next().next().next("p").text() || placeholder;
 
       // Create a new Article using the `result` object built from scraping
      if(result.headline != "" && result.summary != "" && result.byline != "") {
