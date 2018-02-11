@@ -1,3 +1,7 @@
+body{
+  background-color: #f8f8f8;
+}
+
 #jumbotron{
 	background-image: url("../images/newspaper.jpg");
 	background-size: cover;
@@ -10,9 +14,7 @@
 */    text-shadow: black 0em 0.8em 0.7em;
 }
 
-.navbar-inverse .navbar-brand {
-    color: #00BF9A;
-}
+
 .btn-danger{
     color: #008975;
     background-color: #ffffff;
@@ -100,4 +102,29 @@
     color: #333;
     background-color: #00AA8D;
     border-color: #ddd
+}
+
+.navbar-inverse .navbar-brand {
+    color: #9d9d9d;
+}
+.navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:focus, .navbar-inverse .navbar-nav>.active>a:hover {
+     color: #00AA8D; 
+    background-color: #080808;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #00AA8D;
+    border-color: #00AA8D;
+}
+.btn-primary:hover {
+    color: #ffffff;
+    background-color: #58baa9;
+    border-color: #00AA8D;
+}
+
+.btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open>.dropdown-toggle.btn-primary.focus, .open>.dropdown-toggle.btn-primary:focus, .open>.dropdown-toggle.btn-primary:hover {
+    color: #ffffff;
+    background-color: #58baa9;
+    border-color: #00AA8D;
 }
