@@ -38,9 +38,9 @@ app.get("/scrape", function(req, res) {
       result.title = $(this).children("a").text().trim();
       result.link = $(this).children("a").attr("href");
       //description of article
-      result.byline = $(this).next().next("p").text().trim();
+      result.byline = $(this).next().next("p").text().trim() || $(this).children("a").text();
       //the author name
-      result.summary = $(this).next().next().next("p").text() || $(this).children("a").text() ;
+      result.summary = $(this).next().next().next("p").text() || $(this).children("a").text();
 
       // Create a new Article using the `result` object built from scraping
      if(result.headline != "" && result.summary != "" && result.byline != "") {
